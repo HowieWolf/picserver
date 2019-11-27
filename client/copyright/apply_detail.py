@@ -11,10 +11,6 @@ from util.decorator.param import validate_args, fetch_object
 
 class CopyrightList(BaseView):
 
-    def get(self, request, **kwargs):
-        return self.fail(2)
-        pass
-
     @client_auth
     @validate_args({
         'name': forms.CharField(max_length=50),
