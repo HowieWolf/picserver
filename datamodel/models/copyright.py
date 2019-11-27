@@ -11,7 +11,7 @@ class Copyright(models.Model):
     name = models.CharField(max_length=50)
     desc = models.CharField(max_length=200, default='')
     author = models.ForeignKey('User', related_name='copyrights', on_delete=models.CASCADE)
-    location = models.CharField(max_length=256)
+    img = models.ImageField(upload_to='static/copyright/%y/%m/%d')
     # 价格，单位，分
     price = models.IntegerField(default=0)
     # 分类

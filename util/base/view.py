@@ -10,8 +10,9 @@ class BaseView(View):
             'data': data
         })
 
-    def fail(self, code, msg=''):
+    def fail(self, code, msg='', **kwargs):
         return JsonResponse({
             'code': code,
-            'msg': msg
+            'msg': msg,
+            **kwargs
         })

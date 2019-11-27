@@ -15,7 +15,8 @@ class Appeal(models.Model):
     same = models.ManyToManyField('Copyright', related_name='+')
     state = models.IntegerField(default=STATE_WAITING_APPEAL)
     result = models.BooleanField(default=False)
-    time_create = models.DateTimeField(auto_now_add=True)
+    # 提出申请时间
+    time_apply = models.DateTimeField(null=True)
 
     class Meta:
         db_table = 'appeal'

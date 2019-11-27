@@ -43,10 +43,10 @@ def client_auth(function):
                 'code': error.NO_USER
             })
         user = User.objects.get(token=token)
-        if not user.is_enabled:
-            return JsonResponse({
-                'code': error.USER_DISABLED
-            })
+        # if not user.is_enabled:
+        #     return JsonResponse({
+        #         'code': error.USER_DISABLED
+        #     })
         # 用户正常
         request.user = user
         return function(self, request, *args, **kwargs)
