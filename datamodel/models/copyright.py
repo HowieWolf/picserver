@@ -26,3 +26,4 @@ class Copyright(models.Model):
 
     class Meta:
         db_table = 'copyright'
+        ordering = ['-time_finish']
