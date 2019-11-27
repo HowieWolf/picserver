@@ -9,6 +9,8 @@ class Appeal(models.Model):
     # 评审结束
     STATE_FINISH = 2
 
+    STATES_NORMAL = [STATE_APPEALING, STATE_FINISH]
+
     # 申请人
     applicant = models.ForeignKey('User', related_name='appeals', on_delete=models.CASCADE)
     origin = models.OneToOneField('Copyright', related_name='+', on_delete=models.CASCADE)
@@ -18,8 +20,17 @@ class Appeal(models.Model):
     # 提出申请时间
     time_apply = models.DateTimeField(null=True)
 
+    class NormalAppealManager(models.Manager):
+
+        def get_queryset(self):
+            return super().get_queryset().exclude(state=Appeal.STATE_WAITING_APPEAL)
+
+    objects = models.Manager()
+    qs = NormalAppealManager()
+
     class Meta:
         db_table = 'appeal'
+        ordering = ['-time_apply']
 
 
 class AppealJudgement(models.Model):
@@ -27,7 +38,7 @@ class AppealJudgement(models.Model):
     judge = models.ForeignKey('User', related_name='judgements', on_delete=models.CASCADE)
     appeal = models.ForeignKey('Appeal', related_name='suggestions', on_delete=models.CASCADE)
     # 审判者回应的时间
-    time_judge = models.DateTimeField()
+    time_judge = models.DateTimeField(null=True)
 
     class Meta:
         db_table = 'appeal_judgement'
