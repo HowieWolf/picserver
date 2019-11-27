@@ -1,32 +1,35 @@
-from datetime import datetime
-
-from datamodel.models import User
 from datamodel.models.bill import Bill
 from util.base.view import BaseView
 from util.decorator.auth import client_auth
-from util.decorator.param import fetch_object
 
 
-class PayBill(BaseView):
+class MyPayBillList(BaseView):
 
     @client_auth
-    @fetch_object(Bill.objects, 'bill')
-    def post(self, request, bill, **kwargs):
-        if bill.state != Bill.STATE_PAYING:
-            return self.fail(2, '当前无法支付')
-        user = request.user
-        if user.money < bill.cost:
-            return self.fail(1, '余额不足')
-        User.objects.filter(id=user.id).update(money=user.money - bill.cost)
-        Bill.objects.filter(id=bill.id).update(state=Bill.STATE_FINISH, time_pay=datetime.now())
-        return self.success()
+    def get(self, request):
+        qs = Bill.objects.filter(user=request.user)
+        return self.success([bill_to_json(b) for b in qs])
 
 
-class CancelBill(BaseView):
+class PayToMeBillList(BaseView):
+
     @client_auth
-    @fetch_object(Bill.objects, 'bill')
-    def delete(self, request, bill, **kwargs):
-        if bill.state == Bill.STATE_FINISH:
-            return self.fail(2, '订单已完成，无法取消')
-        Bill.objects.filter(id=bill.id).update(state=Bill.STATE_CANCEL)
-        return self.success()
+    def get(self, request):
+        qs = Bill.objects.filter(pic__author=request.user)
+        return self.success([bill_to_json(b) for b in qs])
+
+
+def bill_to_json(b):
+    return {
+        'id': b.id,
+        'cost': b.cost,
+        'state': b.state,
+        'time_create': b.time_create,
+        'time_pay': b.time_pay,
+        'pic': {
+            'id': b.pic.id,
+            'url': b.pic.img.url,
+            'name': b.pic.name,
+            'category': b.pic.category,
+        }
+    }
