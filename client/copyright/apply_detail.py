@@ -34,7 +34,7 @@ class CopyrightList(BaseView):
         dhash = DHash.calculate_hash(Image.open(os.path.join(BASE_DIR, right.img.url)))
         Copyright.objects.filter(id=right.id).update(dhash=dhash)
         # 对比相似度
-        result = has_the_same_pic_with(right)
+        result = has_the_same_pic_with(right, dhash)
         if result is None:
             return self.success({
                 'id': right.id
