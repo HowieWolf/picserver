@@ -1,2 +1,0 @@
-# 默认分页的数量
-CONSTANT_DEFAULT_LIMIT = 10

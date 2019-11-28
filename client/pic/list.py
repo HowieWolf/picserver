@@ -18,13 +18,13 @@ class SearchByKeyword(BaseView):
         if category:
             condition['category'] = category
         qs = Copyright.qs.filter(**condition)
-        return self.success([copyright_to_json(p) for p in qs])
+        return self.success_list(request, qs, copyright_to_json)
 
 
 class SearchHot(BaseView):
     def get(self, request, **kwargs):
         qs = Copyright.qs.all()
-        return self.success([copyright_to_json(p) for p in qs])
+        return self.success_list(request, qs, copyright_to_json)
 
 
 class PicDetail(BaseView):

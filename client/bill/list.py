@@ -6,9 +6,9 @@ from util.decorator.auth import client_auth
 class MyPayBillList(BaseView):
 
     @client_auth
-    def get(self, request):
+    def get(self, request, **kwargs):
         qs = Bill.objects.filter(user=request.user)
-        return self.success([bill_to_json(b) for b in qs])
+        return self.success_list(request, qs, bill_to_json)
 
 
 class PayToMeBillList(BaseView):
@@ -16,7 +16,7 @@ class PayToMeBillList(BaseView):
     @client_auth
     def get(self, request):
         qs = Bill.objects.filter(pic__author=request.user)
-        return self.success([bill_to_json(b) for b in qs])
+        return self.success_list(request, qs, bill_to_json)
 
 
 def bill_to_json(b):

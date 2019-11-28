@@ -7,16 +7,16 @@ from util.decorator.auth import client_auth
 class MyCreateCopyright(BaseView):
 
     @client_auth
-    def get(self, request):
+    def get(self, request, **kwargs):
         qs = Copyright.qs.filter(author=request.user, state=True)
-        return self.success([copyright_to_json(p) for p in qs])
+        return self.success_list(request, qs, copyright_to_json)
 
 
 class MyPayCopyright(BaseView):
     @client_auth
-    def get(self, request):
+    def get(self, request, **kwargs):
         qs = Copyright.qs.filter(bills__user=request.user, bills__state=Bill.STATE_FINISH)
-        return self.success([copyright_to_json(p) for p in qs])
+        return self.success_list(request, qs, copyright_to_json)
 
 
 def copyright_to_json(p):

@@ -21,7 +21,7 @@ class MyAppealList(BaseView):
         if state:
             condition['state'] = state
         qs = Appeal.qs.filter(**condition)
-        return self.success([appeal_to_json(a) for a in qs])
+        return self.success_list(request, qs, appeal_to_json)
 
 
 class MyJudgeAppealList(BaseView):
@@ -39,7 +39,7 @@ class MyJudgeAppealList(BaseView):
         if state:
             condition['state'] = state
         qs = Appeal.qs.filter(**condition)
-        return self.success([appeal_to_json(a) for a in qs])
+        return self.success_list(request, qs, appeal_to_json)
 
 
 class AppealDetail(BaseView):
