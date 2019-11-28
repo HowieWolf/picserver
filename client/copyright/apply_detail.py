@@ -1,9 +1,12 @@
+import os
 from datetime import datetime
 
+from PIL import Image
 from django import forms
 
 from datamodel.models import Copyright, Appeal
-from similarity import has_the_same_pic_with
+from picserver.settings import BASE_DIR
+from similarity import has_the_same_pic_with, DHash
 from util.base.view import BaseView
 from util.decorator.auth import client_auth
 from util.decorator.param import validate_args, fetch_object
@@ -27,6 +30,9 @@ class CopyrightList(BaseView):
         # 创建 Copyright
         right = Copyright.objects.create(name=name, desc=desc, author=user, img=pic, price=price,
                                          category=category, time_finish=now)
+        # 计算 dhash
+        dhash = DHash.calculate_hash(Image.open(os.path.join(BASE_DIR, right.img.url)))
+        Copyright.objects.filter(id=right.id).update(dhash=dhash)
         # 对比相似度
         result = has_the_same_pic_with(right)
         if result is None:
