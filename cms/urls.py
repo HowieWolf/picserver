@@ -1,5 +1,5 @@
 from django.urls import path, include
-from cms import copyright, config, control, adminuser, account
+from cms import copyright, config, control, adminuser, account, cert
 
 urlpatterns = [
     path('copyright/', include(copyright)),
@@ -7,4 +7,5 @@ urlpatterns = [
     path('', include(control)),
     path('adminuser/', include(adminuser)),
     path('account/', include(account)),
+    path('cert/', include(cert)),
 ]

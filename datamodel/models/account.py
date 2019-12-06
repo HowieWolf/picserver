@@ -1,7 +1,9 @@
 from django.db import models
 
-
 # Create your models here.
+from datamodel.models.cert import CertRecord
+
+
 class User(models.Model):
     username = models.CharField(max_length=50, unique=True)
     password = models.CharField(max_length=32)
@@ -9,6 +11,11 @@ class User(models.Model):
     token = models.CharField(max_length=256)
     # 账户余额
     money = models.IntegerField(default=0)
+
+    stage_cert = models.IntegerField(default=CertRecord.STAGE_NO)
+    appid = models.CharField(max_length=32, null=True, default=None)
+    secret = models.CharField(max_length=64, null=True, default=None)
+    qtoken = models.CharField(max_length=256, null=True, default=None)
 
     class Meta:
         db_table = 'user'
