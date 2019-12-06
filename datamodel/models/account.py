@@ -21,7 +21,7 @@ class AdminUser(models.Model):
     username = models.CharField(max_length=20, unique=True, db_index=True)
     password = models.CharField(max_length=128)
     # 系统角色
-    system_role = models.ForeignKey('modellib.CMSRole', related_name='users', default=None, null=True)
+    system_role = models.ForeignKey('CMSRole', related_name='users', default=None, null=True, on_delete=models.CASCADE)
     # token
     token = models.CharField(max_length=254, default='')
 
@@ -31,4 +31,3 @@ class AdminUser(models.Model):
 
     class Meta:
         db_table = 'admin_user'
-        ordering = ['-time_created']

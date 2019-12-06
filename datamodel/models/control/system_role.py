@@ -1,5 +1,3 @@
-import sys
-
 from django.db import models
 
 
@@ -21,7 +19,7 @@ class CMSRole(SystemRole):
     functions = models.ManyToManyField('CMSFunction', related_name='+')
     level = models.IntegerField(default=10000)
     # 默认是超管的下级角色
-    parent_role = models.ForeignKey('CMSRole', related_name='child_roles', default=None, null=True)
+    parent_role = models.ForeignKey('CMSRole', related_name='child_roles', default=None, null=True, on_delete=models.CASCADE)
 
     def is_admin(self):
         return self.id == self.ID_ADMIN and self.level == 0 and self.parent_role is None
