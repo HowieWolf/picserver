@@ -23,7 +23,7 @@ class MyCert(BaseView):
 
     @client_auth
     @validate_args({
-        'name': forms.CharField(max_length=30),
+        'name': forms.CharField(max_length=30, min_length=1),
         'pic': forms.ImageField(),
     })
     def post(self, request, name, pic, **kwargs):

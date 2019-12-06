@@ -18,4 +18,5 @@ from django.urls import path, include
 urlpatterns = [
     path('client/', include('client.urls')),
     path('cms/', include('cms.urls')),
+    path('third/', include('third.urls')),
 ]

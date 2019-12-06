@@ -4,11 +4,13 @@ from datamodel.models import CertRecord
 from util.base.view import BaseView
 from util.decorator.auth import cms_auth
 from util.decorator.param import validate_args, fetch_object
+from util.decorator.permission import cms_permission
 
 
 class CertRecordList(BaseView):
 
     @cms_auth
+    @cms_permission('filterCertRecord')
     @validate_args({
         'stage': forms.IntegerField(required=False),
     })
@@ -22,6 +24,7 @@ class CertRecordList(BaseView):
 
 class CertRecordDetail(BaseView):
     @cms_auth
+    @cms_permission('certRecordDetail')
     @fetch_object(CertRecord.objects, 'cert')
     def get(self, request, cert, **kwargs):
         return self.success(cert_to_josn(cert))

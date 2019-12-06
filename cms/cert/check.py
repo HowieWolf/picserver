@@ -4,12 +4,14 @@ from datamodel.models import CertRecord, User
 from util.base.view import BaseView
 from util.decorator.auth import cms_auth
 from util.decorator.param import fetch_object, validate_args
+from util.decorator.permission import cms_permission
 from util.security import md5
 
 
 class CertCheck(BaseView):
 
     @cms_auth
+    @cms_permission('checkCert')
     @validate_args({
         'result': forms.BooleanField(),
     })
@@ -17,7 +19,7 @@ class CertCheck(BaseView):
     def post(self, request, cert, result, **kwargs):
         if cert.stage == CertRecord.STAGE_PASS or cert.stage == CertRecord.STAGE_REJECT:
             return self.fail(1, '无法重复审核')
-        user = request.user
+        user = cert.user
         if not result:
             CertRecord.objects.filter(id=cert.id).update(stage=CertRecord.STAGE_REJECT)
             User.objects.filter(id=user.id).update(stage_cert=CertRecord.STAGE_REJECT)

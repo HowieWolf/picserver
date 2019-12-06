@@ -52,3 +52,27 @@ def client_auth(function):
         return function(self, request, *args, **kwargs)
 
     return decorator
+
+
+def third_auth(function):
+    """
+    平台用户认证
+    """
+
+    @wraps(function)
+    def decorator(self, request, *args, **kwargs):
+        token = request.META.get('HTTP_X_USER_TOKEN')
+        if not token or User.objects.filter(qtoken=token).count() <= 0:
+            return JsonResponse({
+                'code': error.NO_USER
+            })
+        user = User.objects.get(qtoken=token)
+        # if not user.is_enabled:
+        #     return JsonResponse({
+        #         'code': error.USER_DISABLED
+        #     })
+        # 用户正常
+        request.user = user
+        return function(self, request, *args, **kwargs)
+
+    return decorator
