@@ -1,6 +1,6 @@
 from functools import wraps
 
-from django.http import JsonResponse, HttpResponseRedirect
+from django.http import JsonResponse
 
 from datamodel.models import CMSFunction
 from util.code import error
