@@ -6,7 +6,7 @@ urlpatterns = [
     path('config/', include(config)),
     # 权限
     path('', include(control)),
-    path('adminuser/', include(adminuser)),
+    path('manager/', include(adminuser)),
     path('account/', include(account)),
     path('cert/', include(cert)),
     path('contract/', include(contract)),

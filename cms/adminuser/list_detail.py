@@ -17,16 +17,13 @@ class AllAdminUserList(BaseView):
     @validate_args({
         'username': forms.CharField(max_length=100, required=False),
         'name': forms.CharField(max_length=100, required=False),
-        'phone': forms.CharField(max_length=100, required=False),
         'role_id': forms.IntegerField(required=False),
     })
-    def get(self, request, name='', phone='', username='', role_id=None, **kwargs):
+    def get(self, request, name='', username='', role_id=None, **kwargs):
         # 构造筛选参数
         filter_params = {}
         if name:
             filter_params['name__icontains'] = name
-        if phone:
-            filter_params['phone_number__contains'] = phone
         if username:
             filter_params['username__icontains'] = username
         # role_id 小于0 表示筛选无角色的用户
@@ -42,22 +39,21 @@ class AllAdminUserList(BaseView):
     @cms_auth
     @cms_permission('createManager')
     @validate_args({
-        'phone': forms.CharField(min_length=11, max_length=11),
+        'username': forms.CharField(min_length=11, max_length=11),
         'role_id': forms.IntegerField(),
         'name': forms.CharField(max_length=15, required=False),
     })
     @fetch_object(CMSRole.objects, 'role', force=False)
-    def post(self, request, phone, role, name='', **kwargs):
-        if not phone.isdigit():
+    def post(self, request, username, role, name='', **kwargs):
+        if not username.isdigit():
             return self.fail(1, '手机号码格式不正确')
-        if AdminUser.objects.filter(phone_number=phone).exists():
+        if AdminUser.objects.filter(username=username).exists():
             return self.fail(2, '手机号已被注册')
         # 手机号后六位
-        psd = generate_psd(phone[-6:])
+        psd = generate_psd(username[-6:])
         token = generate_token(psd)
         AdminUser.objects.create(
-            username=phone,
-            phone_number=phone,
+            username=username,
             name=name,
             system_role=role,
             password=psd,
@@ -72,11 +68,10 @@ class ManagerControlledByMe(BaseView):
     @validate_args({
         'username': forms.CharField(max_length=100, required=False),
         'name': forms.CharField(max_length=100, required=False),
-        'phone': forms.CharField(max_length=100, required=False),
         'role_id': forms.IntegerField(required=False),
     })
     @fetch_object(CMSRole.objects, 'role', force=False)
-    def get(self, request, name='', phone='', username='', role=None, **kwargs):
+    def get(self, request, name='', username='', role=None, **kwargs):
         # 如果筛选的角色，不归我管，则肯定没有用户
         my_role = request.user.system_role
         if role and not compare_role(my_role, role):
@@ -92,8 +87,6 @@ class ManagerControlledByMe(BaseView):
         filter_params = {}
         if name:
             filter_params['name__icontains'] = name
-        if phone:
-            filter_params['phone_number__contains'] = phone
         if username:
             filter_params['username__icontains'] = username
         # 开始筛选
@@ -127,9 +120,5 @@ def adminuser_to_json(u):
         'username': u.username,
         'enable': u.is_enabled,
         'name': u.name,
-        'phone': u.phone_number,
-        'gender': u.gender,
-        'icon': u.icon,
-        'email': u.email,
         'role': role_json
     }
